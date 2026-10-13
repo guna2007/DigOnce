@@ -7,6 +7,7 @@ import { migrateDatabase } from "./db/migrate";
 import { registerErrorHandler } from "./errors";
 import { publicRoutes } from "./routes/public";
 import { sessionRoutes } from "./routes/session";
+import { projectRoutes } from "./routes/projects";
 
 export function buildApp(database: CoreDatabase = openDatabase()) {
   const app = Fastify({
@@ -23,6 +24,7 @@ export function buildApp(database: CoreDatabase = openDatabase()) {
   app.get("/api/health", async () => ({ status: "ok" }));
   app.register(publicRoutes, { prefix: "/api/v1", database });
   app.register(sessionRoutes, { prefix: "/api/v1" });
+  app.register(projectRoutes, { prefix: "/api/v1", database });
 
   return app;
 }

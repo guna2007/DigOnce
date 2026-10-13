@@ -1,23 +1,6 @@
-import type { FastifyPluginAsync, FastifyRequest } from "fastify";
-import { createSessionToken, isOperatorPasswordValid, OPERATOR_COOKIE, readSessionToken, sessionCookieOptions } from "../auth/session";
+import type { FastifyPluginAsync } from "fastify";
+import { assertSameOrigin, createSessionToken, isOperatorPasswordValid, OPERATOR_COOKIE, readSessionToken, sessionCookieOptions } from "../auth/session";
 import { ApiFailure } from "../errors";
-
-function assertSameOrigin(request: FastifyRequest): void {
-  const origin = request.headers.origin;
-  if (!origin) throw new ApiFailure(403, "FORBIDDEN_ORIGIN", "This request origin is not allowed.");
-
-  try {
-    const originUrl = new URL(origin);
-    const configuredOrigin = process.env.APP_ORIGIN;
-    const allowed = configuredOrigin
-      ? originUrl.origin === new URL(configuredOrigin).origin
-      : originUrl.hostname === request.hostname;
-    if (!allowed) throw new ApiFailure(403, "FORBIDDEN_ORIGIN", "This request origin is not allowed.");
-  } catch (error) {
-    if (error instanceof ApiFailure) throw error;
-    throw new ApiFailure(403, "FORBIDDEN_ORIGIN", "This request origin is not allowed.");
-  }
-}
 
 const loginSchema = {
   body: {

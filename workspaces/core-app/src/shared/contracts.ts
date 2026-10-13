@@ -60,6 +60,37 @@ export interface ProjectDetail extends ProjectSummary {
   events: ProjectEvent[];
 }
 
+export interface CreateProject {
+  title: string;
+  description: string;
+  workType: WorkType;
+  departmentId: string;
+  impact: string;
+  status: "planned" | "active";
+  startDate: DateOnly;
+  endDate: DateOnly;
+  earliestStartDate?: DateOnly | null;
+  latestEndDate?: DateOnly | null;
+  segmentIds: string[];
+  sourceLabel: string;
+}
+
+export interface Reschedule {
+  version: number;
+  startDate: DateOnly;
+  endDate: DateOnly;
+  reason: string;
+  expectedPeerVersions?: Record<string, number>;
+}
+
+export interface PublishUpdate {
+  version: number;
+  type: "progress" | "delay";
+  summary: string;
+  reason?: string;
+  revisedEndDate?: DateOnly;
+}
+
 export interface ApiError {
   error: {
     code: string;

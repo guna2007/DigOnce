@@ -1,7 +1,31 @@
 import { createHmac, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
+import type { FastifyRequest } from "fastify";
+import { ApiFailure } from "../errors";
 
 export const OPERATOR_COOKIE = "onedig_operator_session";
 export const SESSION_MAX_AGE_SECONDS = 8 * 60 * 60;
+
+export function assertSameOrigin(request: FastifyRequest): void {
+  const origin = request.headers.origin;
+  if (!origin) throw new ApiFailure(403, "FORBIDDEN_ORIGIN", "This request origin is not allowed.");
+
+  try {
+    const originUrl = new URL(origin);
+    const configuredOrigin = process.env.APP_ORIGIN;
+    const allowed = configuredOrigin
+      ? originUrl.origin === new URL(configuredOrigin).origin
+      : originUrl.hostname === request.hostname;
+    if (!allowed) throw new ApiFailure(403, "FORBIDDEN_ORIGIN", "This request origin is not allowed.");
+  } catch (error) {
+    if (error instanceof ApiFailure) throw error;
+    throw new ApiFailure(403, "FORBIDDEN_ORIGIN", "This request origin is not allowed.");
+  }
+}
+
+export function requireOperator(request: FastifyRequest): void {
+  const session = readSessionToken(request.cookies?.[OPERATOR_COOKIE]);
+  if (!session) throw new ApiFailure(401, "UNAUTHENTICATED", "Sign in to continue.");
+}
 
 interface SessionPayload {
   operatorLabel: string;
