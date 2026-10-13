@@ -2,9 +2,9 @@
 
 Updated: 2026-10-13
 
-- **Completed tasks:** I00 — standalone package scaffold, contract types, Market Road fixture, contract test, and harness shell.
-- **Current active task:** I01 — evidence-backed warning rules.
-- **Files created/modified:** `workspaces/innovation/.gitignore`, `package.json`, `package-lock.json`, `tsconfig.json`, `vite.config.ts`, `src/contracts.ts`, `src/engine/index.ts`, `src/intake/index.ts`, `src/ui/index.ts`, `harness/index.html`, `harness/main.tsx`, `fixtures/marketRoad.ts`, `tests/innovation/contracts.test.ts`.
-- **Verification:** `npm --prefix workspaces/innovation install` failed with ENOENT for the absent repository-root `package.json`; equivalent `npm install` from `workspaces/innovation` passed. `npm run typecheck` passed. `npm run build` passed. `npm run test` passed (1 contract test). `npm run dev:harness` started at `http://127.0.0.1:5173/`; HTTP check returned 200 and served the harness entry. The browser panel was queued for display.
+- **Completed tasks:** I00 — standalone package scaffold; I01 — date-only warnings with inclusive overlap precedence and stable IDs.
+- **Current active task:** I02 — bounded feasible scenario search.
+- **Files created/modified:** I01 added `src/engine/date.ts`, `src/engine/warnings.ts`, updated `src/engine/index.ts`, and added `tests/innovation/warnings.test.ts`.
+- **Verification:** I00: `npm install` from `workspaces/innovation` passed; `npm run typecheck`, `npm run build`, and `npm run test` passed (1 test); `npm run dev:harness` started and localhost returned HTTP 200. I01: `npm run test` passed (2 files, 6 tests); `npm run typecheck` passed.
 - **Decisions/blockers:** current checkout is a separate `feat/innovation-studio` managed worktree from Developer 1's `feat/core-mvp`. Normal Git status cannot read shared worktree metadata in this sandbox; elevated read/commit commands work. Added `server.fs.allow` for repository-root test imports and ignored generated package artifacts. `npm --prefix` behavior is an environment command mismatch; use equivalent package-directory invocation and retain the failed exact command in verification notes.
-- **Next task:** I01. After each verified task, update this file and the task checkbox before committing the increment.
+- **Next task:** I02. After each verified task, update this file and the task checkbox before committing the increment.
