@@ -1,11 +1,13 @@
 # Innovation progress
 
-Updated: 2026-10-13 (setup documents only)
+Updated: 2026-10-13
 
-- **Completed tasks:** none.
-- **Current active task:** I00 — scaffold the importable package and harness. Not started.
-- **Files created/modified for implementation:** none. This workspace currently contains only `AGENTS.md`, `TASKS.md`, and `PROGRESS.md`.
-- **Tests executed/results:** none; package scripts and application files do not exist yet.
-- **Decisions:** use pure `ScenarioSnapshot → ScenarioAnalysis`; server-only evidence-validated intake; React components use callbacks and core design tokens.
-- **Blockers:** none. Git is not initialized at the time these instructions were generated; follow `GIT_WORKFLOW.md` before parallel branches.
-- **Next task:** I00. After each verified task, record changed files, exact commands/results, any decision/blocker, and the next task; then check its box in `TASKS.md`.
+- **Completed tasks:** I00 scaffold; I01 warning rules; I02 bounded scenario search; I03 responsive Studio UI; I04 evidence-validated optional Responses extraction; I05 labelled rules/manual fallback; I06 reviewed intake panel; I07 standalone gate.
+- **I05 follow-up file:** `tests/innovation/fallback.test.ts` adds focused tests for exact source evidence, distinct ambiguous segment candidates, absent-key no-fetch behavior, and manual mode.
+- **Standalone verification:** final `npm run typecheck` passed; `npm run test` passed (8 files, 30 tests); `npm run build` passed. Node resolved all four package exports and imported `@onedig/innovation/intake`. Browser harness asset scan found no OpenAI endpoint, key, or SDK marker.
+- **Fixture results:** synthetic Market Road notice returns evidence-backed `rules` draft without fetch; unsupported text returns `manual`. Fixture snapshot returns one `recent_resurfacing` warning and candidate 16–21 Oct 2026 with `expectedPeerVersions: {"prj-road":1}` and zero warnings after. Date mutation changes computed evidence/explanation; impossible window returns `no_safe_option` and null candidate.
+- **Manual harness:** `npm run dev:harness` served localhost. Desktop Studio walkthrough showed the candidate, applied through a mock callback, and refreshed to zero warnings/`no_change_needed`. At 390×844 the schedule cards stack in one column without horizontal overflow. Mobile intake completed synthetic notice → rules draft → officer review → mock confirmation; the missing impact kept confirmation disabled until filled.
+- **Changed implementation files across I04–I07:** `src/intake/extractNotice.ts`, `src/intake/validate.ts`, `src/intake/fallback.ts`, `src/intake/index.ts`, `src/ui/NoticeIntakePanel.tsx`, `src/ui/index.ts`, `src/ui/styles.css`, `harness/main.tsx`, `tests/innovation/extractNotice.test.ts`, `tests/innovation/fallback.test.ts`, `tests/innovation/intakePanel.test.tsx`, `tests/innovation/standalone.test.ts`.
+- **Earlier task checks:** I00 package install/typecheck/build/harness HTTP 200 passed; I01 tests (6)/typecheck passed; I02 tests (13)/typecheck/build passed; I03 tests (15)/typecheck/build and desktop/mobile manual check passed.
+- **Security/contracts:** separate managed `feat/innovation-studio` worktree from `feat/core-mvp`; no unowned files or shared contracts changed. Key is caller-injected server-only, no key was sourced/logged/committed, all provider tests are mocked and no live request was made. Raw notices are not persisted and extraction has no create-project callback. Repository-root `npm --prefix` commands fail because no root manifest exists; package-directory commands pass. Vitest needed elevated worktree execution to write its temporary Vite config bundle.
+- **Blockers/next:** no I00–I07 blockers. Stop at the standalone gate. I08 remains pending core C11–C12 and integration branch; send core adapter or contract mismatches to the planning thread/Developer 1.
