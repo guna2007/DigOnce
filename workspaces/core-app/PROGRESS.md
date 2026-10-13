@@ -1,11 +1,9 @@
 # Core app progress
 
-Updated: 2026-10-13 (setup documents only)
+Updated: 2026-10-13
 
-- **Completed tasks:** none.
-- **Current active task:** C00 — scaffold the independent core package. Not started.
-- **Files created/modified for implementation:** none. This workspace currently contains only `AGENTS.md`, `TASKS.md`, and `PROGRESS.md`.
-- **Tests executed/results:** none; package scripts and application files do not exist yet.
-- **Decisions:** follow the six approved root plans and `API_CONTRACTS.md`; core must work with innovation disabled; package integration uses `@onedig/innovation` exports.
-- **Blockers:** none. Git is not initialized at the time these instructions were generated; follow `GIT_WORKFLOW.md` before parallel branches.
-- **Next task:** C00. After each verified task, record changed files, exact commands/results, any decision/blocker, and the next task; then check its box in `TASKS.md`.
+- **Completed tasks:** C00–C10. The standalone React/Vite + Fastify/SQLite core now supports public works browsing and timelines, authenticated operator project and schedule updates, public concern submission with private receipts, and an explicit authenticated 503 fallback for disabled innovation routes.
+- **Changed files:** C00–C03 scaffold, schema, seed and public API files; C04/C07/C09 resident and operator screens, shared API client, accessible map/tile fallback, forms, schedule workflow, report queue and receipt screens; C05/C06/C08 session, project-write and report services/routes with tests; C10 innovation placeholder route, Playwright config, core flow/browser integration tests and test scripts. Updated `vite.config.ts` so the API proxy follows `PORT`; the e2e server uses dedicated strict ports so a preexisting development server cannot silently receive test traffic. Updated this task list and progress record.
+- **Verification:** `npm --prefix workspaces/core-app run seed:reset` passed for 2026-10-13. `test:core` passed (3 tests); `test:integration` passed (8 tests); `typecheck` passed; `build` passed. `test:e2e` passed twice from fresh resets (each run: 2 passed), covering the complete resident/operator project, schedule, concern, response and receipt flow at desktop and mobile sizes with map tiles blocked. The disabled innovation routes returned the documented `INNOVATION_UNAVAILABLE` 503 envelope in integration tests. Earlier browser failures exposed the fixed Vite API proxy target; proxy now uses the configured server port and both repeat runs passed.
+- **Blockers:** No blocker for the standalone core MVP gate. C11 remains dependent on innovation tasks I00–I03 and is outside this core-only implementation gate.
+- **Next task:** C11 — scenario analysis integration, after its innovation dependencies are complete and the main planning thread authorizes that phase.
