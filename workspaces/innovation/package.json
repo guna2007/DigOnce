@@ -14,7 +14,7 @@
     "dev:harness": "vite --config vite.config.ts --host 127.0.0.1",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run --config vite.config.ts",
-    "build": "tsc -p tsconfig.json && vite build --config vite.config.ts"
+    "build": "tsc -p tsconfig.json && node ./scripts/copy-css.mjs && vite build --config vite.config.ts"
   },
   "peerDependencies": { "react": ">=18", "react-dom": ">=18" },
   "devDependencies": {

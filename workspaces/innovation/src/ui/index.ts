@@ -1,1 +1,1 @@
-export {};
+export { CoordinationStudio } from "./CoordinationStudio.js";
