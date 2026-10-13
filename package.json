@@ -1,0 +1,12 @@
+{
+  "name": "onedig",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix workspaces/core-app run dev",
+    "typecheck": "npm --prefix workspaces/core-app run typecheck",
+    "test:core": "npm --prefix workspaces/core-app run test:core",
+    "test:integration": "npm --prefix workspaces/core-app run test:integration",
+    "build": "npm --prefix workspaces/core-app run build",
+    "seed:reset": "npm --prefix workspaces/core-app run seed:reset"
+  }
+}
