@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { openDatabase } from "./database";
 import { getDemoDay, seedDemoData } from "./demoData";
 import { migrateDatabase } from "./migrate";

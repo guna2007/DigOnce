@@ -38,6 +38,17 @@ export function registerErrorHandler(app: FastifyInstance): void {
       return reply.code(400).send(body);
     }
 
+    if (error.statusCode === 429) {
+      const body: ApiError = {
+        error: {
+          code: "RATE_LIMITED",
+          message: "Too many requests. Wait a moment and try again.",
+          requestId: request.id,
+        },
+      };
+      return reply.code(429).send(body);
+    }
+
     request.log.error({ err: error }, "Unhandled API error");
     const body: ApiError = {
       error: {
