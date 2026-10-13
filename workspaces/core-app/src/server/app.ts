@@ -8,6 +8,7 @@ import { registerErrorHandler } from "./errors";
 import { publicRoutes } from "./routes/public";
 import { sessionRoutes } from "./routes/session";
 import { projectRoutes } from "./routes/projects";
+import { reportRoutes } from "./routes/reports";
 
 export function buildApp(database: CoreDatabase = openDatabase()) {
   const app = Fastify({
@@ -25,6 +26,7 @@ export function buildApp(database: CoreDatabase = openDatabase()) {
   app.register(publicRoutes, { prefix: "/api/v1", database });
   app.register(sessionRoutes, { prefix: "/api/v1" });
   app.register(projectRoutes, { prefix: "/api/v1", database });
+  app.register(reportRoutes, { prefix: "/api/v1", database });
 
   return app;
 }

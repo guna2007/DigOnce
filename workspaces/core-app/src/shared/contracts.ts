@@ -91,6 +91,17 @@ export interface PublishUpdate {
   revisedEndDate?: DateOnly;
 }
 
+export interface OperatorReport {
+  id: string;
+  projectId: string;
+  category: ReportCategory;
+  description: string;
+  status: ReportStatus;
+  operatorResponse: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface ApiError {
   error: {
     code: string;
