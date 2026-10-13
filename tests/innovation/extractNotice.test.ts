@@ -64,18 +64,35 @@ describe("extractNotice", () => {
     expect(result.warnings.join(" ")).toMatch(/exact source evidence|real date|known department/i);
   });
 
-  it("returns a labelled manual draft when no key is supplied and never makes a request", async () => {
+  it("returns a labelled rules draft when no key is supplied and never makes a request", async () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
     const result = await extractNotice(input, { timeoutMs: 1000 });
-    expect(result.mode).toBe("manual");
-    expect(result.draft.segmentIdCandidates).toEqual([]);
-    expect(result.warnings.join(" ")).toMatch(/AI extraction is unavailable/i);
+    expect(result.mode).toBe("rules");
+    expect(result.draft.segmentIdCandidates).toEqual(["seg-market-1"]);
+    expect(result.evidence.every((item) => rawText.includes(item.quote))).toBe(true);
+    expect(result.warnings.join(" ")).toMatch(/AI extraction unavailable/i);
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("fails closed on incomplete provider responses", async () => {
+  it("returns a labelled rules fallback on incomplete provider responses", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => response(proposed, "incomplete") }));
-    await expect(extractNotice(input, { apiKey: "mock-key", timeoutMs: 1000 })).rejects.toThrow(/did not complete/);
+    const result = await extractNotice(input, { apiKey: "mock-key", timeoutMs: 1000 });
+    expect(result.mode).toBe("rules");
+    expect(result.warnings.join(" ")).toMatch(/AI extraction unavailable/i);
+  });
+
+  it("returns a labelled fallback after timeout or provider failure", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(Object.assign(new Error("timeout"), { name: "AbortError" })));
+    const result = await extractNotice(input, { apiKey: "mock-key", timeoutMs: 1 });
+    expect(result.mode).toBe("rules");
+    expect(result.warnings.join(" ")).toMatch(/timed out/i);
+  });
+
+  it("returns an editable manual draft when no known alias or date is present", async () => {
+    const result = await extractNotice({ rawText: "A public notice will be prepared after details are reviewed by the officer.", departments, segments }, { timeoutMs: 1000 });
+    expect(result.mode).toBe("manual");
+    expect(result.draft.startDate).toBeNull();
+    expect(result.draft.segmentIdCandidates).toEqual([]);
   });
 });

@@ -1,5 +1,6 @@
 import type { IntakeResult, NoticeInput } from "../contracts.js";
 import { validateProposedNotice, type ProposedNotice } from "./validate.js";
+import { extractNoticeFallback } from "./fallback.js";
 
 export interface ExtractNoticeOptions { apiKey?: string; model?: string; timeoutMs: number }
 
@@ -55,11 +56,7 @@ function validateInput(input: NoticeInput, timeoutMs: number): void {
 /** Server-only Responses API extraction. The caller supplies the secret; this module never reads environment or logs it. */
 export async function extractNotice(input: NoticeInput, options: ExtractNoticeOptions): Promise<IntakeResult> {
   validateInput(input, options.timeoutMs);
-  if (!options.apiKey) return {
-    mode: "manual",
-    draft: { title: null, description: null, workType: null, departmentId: null, impact: null, startDate: null, endDate: null, segmentIdCandidates: [] },
-    evidence: [], warnings: ["AI extraction is unavailable; enter and review fields manually."],
-  };
+  if (!options.apiKey) return extractNoticeFallback(input, "no server API key configured");
   if (typeof window !== "undefined") throw new Error("Notice extraction is server-only");
 
   const controller = new AbortController();
@@ -83,6 +80,8 @@ export async function extractNotice(input: NoticeInput, options: ExtractNoticeOp
     if (!response.ok) throw new Error(`Provider returned HTTP ${response.status}`);
     const parsed = JSON.parse(outputText(await response.json())) as unknown;
     return validateProposedNotice(input, parseProposed(parsed));
+  } catch (error) {
+    return extractNoticeFallback(input, error instanceof Error && error.name === "AbortError" ? "request timed out" : "provider request failed");
   } finally {
     clearTimeout(timer);
   }
