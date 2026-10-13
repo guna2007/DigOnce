@@ -1,6 +1,9 @@
 import Fastify from "fastify";
 import cookie from "@fastify/cookie";
 import rateLimit from "@fastify/rate-limit";
+import fastifyStatic from "@fastify/static";
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import type { CoreDatabase } from "./db/database";
 import { openDatabase } from "./db/database";
 import { migrateDatabase } from "./db/migrate";
@@ -11,7 +14,9 @@ import { projectRoutes } from "./routes/projects";
 import { reportRoutes } from "./routes/reports";
 import { innovationRoutes } from "./routes/innovation";
 
-export function buildApp(database: CoreDatabase = openDatabase()) {
+export interface AppOptions { innovationEnabled?: boolean; serveStatic?: boolean }
+
+export function buildApp(database: CoreDatabase = openDatabase(), options: AppOptions = {}) {
   const app = Fastify({
     logger: true,
     ajv: { customOptions: { removeAdditional: false } },
@@ -28,7 +33,22 @@ export function buildApp(database: CoreDatabase = openDatabase()) {
   app.register(sessionRoutes, { prefix: "/api/v1" });
   app.register(projectRoutes, { prefix: "/api/v1", database });
   app.register(reportRoutes, { prefix: "/api/v1", database });
-  app.register(innovationRoutes, { prefix: "/api/v1" });
+  app.register(innovationRoutes, {
+    prefix: "/api/v1", database, enabled: options.innovationEnabled ?? true,
+  });
+
+  if (options.serveStatic) {
+    const root = fileURLToPath(new URL("../../dist", import.meta.url));
+    if (existsSync(root)) {
+      app.register(fastifyStatic, { root, wildcard: false });
+      app.setNotFoundHandler((request, reply) => {
+        if (request.url.startsWith("/api/")) {
+          return reply.code(404).send({ error: { code: "NOT_FOUND", message: "Route not found.", requestId: request.id } });
+        }
+        return reply.sendFile("index.html");
+      });
+    }
+  }
 
   return app;
 }

@@ -13,7 +13,7 @@ test("disabled innovation adapters return authenticated 503 envelopes", async ()
   const database = openDatabase(":memory:");
   migrateDatabase(database);
   seedDemoData(database, "2026-10-13");
-  const app = buildApp(database);
+  const app = buildApp(database, { innovationEnabled: false });
   const origin = { origin: "http://localhost:5173" };
   try {
     const anonymous = await app.inject({

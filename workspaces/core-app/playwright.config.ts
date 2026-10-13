@@ -10,7 +10,7 @@ process.env.APP_ORIGIN ??= "http://127.0.0.1:4179";
 
 export default defineConfig({
   testDir: "../../tests/integration",
-  testMatch: "coreBrowser.spec.ts",
+  testMatch: ["coreBrowser.spec.ts", "fullDemo.spec.ts"],
   fullyParallel: false,
   workers: 1,
   timeout: 90_000,

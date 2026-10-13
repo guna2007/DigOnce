@@ -11,11 +11,13 @@ import { OperatorReportsPage } from "./OperatorReportsPage";
 
 interface OperatorDashboardPageProps {
   onOpenProject(id: string): void;
+  onOpenStudio(id?: string): void;
+  onOpenIntake(): void;
 }
 
 type ViewState = "checking" | "signed-out" | "loading" | "ready";
 
-export function OperatorDashboardPage({ onOpenProject }: OperatorDashboardPageProps) {
+export function OperatorDashboardPage({ onOpenProject, onOpenStudio, onOpenIntake }: OperatorDashboardPageProps) {
   const [view, setView] = useState<ViewState>("checking");
   const [operatorLabel, setOperatorLabel] = useState("Operator");
   const [password, setPassword] = useState("");
@@ -161,7 +163,10 @@ export function OperatorDashboardPage({ onOpenProject }: OperatorDashboardPagePr
         <div className="operator-user"><span>Signed in as <strong>{operatorLabel}</strong></span><button className="button button-secondary" onClick={() => void signOut()}>Sign out</button></div>
       </section>
       {globalError && <div className="state-card error-state" role="alert"><p>{globalError}</p><button className="button button-secondary" onClick={() => void refresh()}>Reload workspace</button></div>}
-      <div className="standalone-note"><strong>Standalone core mode</strong><span>Dig Once Studio and notice intake are unavailable until the innovation package is connected.</span></div>
+      <div className="integration-actions" aria-label="Integrated coordination tools">
+        <div><strong>Turn a departmental notice into a reviewed draft.</strong><span>Evidence remains visible and nothing is saved until you confirm it.</span><button className="button button-secondary" onClick={onOpenIntake}>Open notice intake</button></div>
+        <div><strong>Compute a safer street schedule.</strong><span>Analyze live project dates and apply only after an operator supplies a public reason.</span><button className="button button-primary" onClick={() => onOpenStudio(selectedProject?.id)}>Open Dig Once Studio</button></div>
+      </div>
       <div className="operator-grid">
         <section className="operator-panel">
           <ProjectForm

@@ -1,4 +1,5 @@
 import type { CreateProject, Department, ListResponse, OperatorReport, ProjectDetail, ProjectStatus, ProjectSummary, PublishUpdate, ReportCategory, ReportStatus, Reschedule, Segment } from "../../shared/contracts";
+import type { IntakeResult, ScenarioAnalysis } from "@onedig/innovation/contracts";
 
 export class ApiClientError extends Error {
   constructor(readonly status: number, readonly code: string, message: string) {
@@ -97,5 +98,17 @@ export function getOperatorReports(status?: ReportStatus) {
 export function updateOperatorReport(id: string, status: ReportStatus, operatorResponse: string | null) {
   return request<OperatorReport>(`/operator/reports/${encodeURIComponent(id)}`, {
     method: "PATCH", body: JSON.stringify({ status, operatorResponse }),
+  });
+}
+
+export function analyzeCoordination(focusProjectId: string) {
+  return request<ScenarioAnalysis>("/operator/coordination/analyze", {
+    method: "POST", body: JSON.stringify({ focusProjectId }),
+  });
+}
+
+export function extractNoticeDraft(rawText: string) {
+  return request<IntakeResult>("/operator/intake/extract", {
+    method: "POST", body: JSON.stringify({ rawText }),
   });
 }

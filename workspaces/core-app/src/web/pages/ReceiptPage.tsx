@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReportCategory, ReportStatus } from "../../shared/contracts";
 import { ApiClientError, trackReport } from "../api/client";
 
@@ -28,6 +28,7 @@ export function ReceiptPage({ initialToken, onBack }: ReceiptPageProps) {
   const [loading, setLoading] = useState(Boolean(initialToken));
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const checkedInitialToken = useRef<string | null>(null);
 
   async function checkReceipt(receiptToken: string) {
     setLoading(true);
@@ -43,7 +44,10 @@ export function ReceiptPage({ initialToken, onBack }: ReceiptPageProps) {
   }
 
   useEffect(() => {
-    if (initialToken) void checkReceipt(initialToken);
+    if (initialToken && checkedInitialToken.current !== initialToken) {
+      checkedInitialToken.current = initialToken;
+      void checkReceipt(initialToken);
+    }
   }, [initialToken]);
 
   async function copyToken() {

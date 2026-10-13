@@ -50,13 +50,13 @@ const updateSchema = {
 export const reportRoutes: FastifyPluginAsync<ReportRoutesOptions> = async (app, { database }) => {
   app.post<{ Body: { projectId: string; category: ReportCategory; description: string } }>("/reports", {
     schema: publicCreateSchema,
-    config: { rateLimit: { max: 5, timeWindow: "1 minute" } },
+    config: { rateLimit: { max: 5, timeWindow: "1 minute", groupId: "report-create" } },
     preHandler: async (request: FastifyRequest) => assertSameOrigin(request),
   }, async (request, reply) => reply.code(201).send(createReport(database, request.body)));
 
   app.post<{ Body: { receiptToken: string } }>("/reports/track", {
     schema: trackSchema,
-    config: { rateLimit: { max: 10, timeWindow: "1 minute" } },
+    config: { rateLimit: { max: 10, timeWindow: "1 minute", groupId: "report-track" } },
     preHandler: async (request: FastifyRequest) => assertSameOrigin(request),
   }, async (request) => trackReport(database, request.body.receiptToken));
 
